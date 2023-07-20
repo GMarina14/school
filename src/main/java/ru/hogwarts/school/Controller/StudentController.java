@@ -33,18 +33,20 @@ public class StudentController {
     @GetMapping("/by-age/{age}")
     public ResponseEntity<Collection<Student>> getStudentsByAge(@PathVariable Integer age) {
         Collection<Student> students = studentService.studentsInAge(age);
-        if(students.isEmpty())
+        if (students.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(students);
     }
+
     @GetMapping("/all")
-    public ResponseEntity<Collection<Student>> getAll(){
+    public ResponseEntity<Collection<Student>> getAll() {
         Collection<Student> students = studentService.getAllStudents();
-        if(students.isEmpty())
+        if (students.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(students);
 
     }
+
     @PutMapping("/update/{studentId}")
     public ResponseEntity<Student> editStudentInfo(@PathVariable Long studentId, @RequestBody Student student) {
         Student studentEdited = studentService.updateStudent(studentId, student);
@@ -54,11 +56,9 @@ public class StudentController {
     }
 
     @DeleteMapping("/expel/{studentId}")
-    public ResponseEntity<Student> expelStudent(@PathVariable Long studentId) {
-        Student expeledStudent = studentService.deleteStudent(studentId);
-        if (expeledStudent == null)
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(expeledStudent);
+    public ResponseEntity expelStudent(@PathVariable Long studentId) {
+        studentService.deleteStudent(studentId);
+        return ResponseEntity.ok().build();
     }
 }
 
