@@ -2,6 +2,7 @@ package ru.hogwarts.school.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.Model.Faculty;
 import ru.hogwarts.school.Model.Student;
 import ru.hogwarts.school.Service.StudentService;
 
@@ -47,6 +48,22 @@ public class StudentController {
 
     }
 
+    @GetMapping("/age-gap/{min}/{max}")
+    public ResponseEntity<Collection<Student>> getStudentsInAgeGap(@PathVariable Integer min, @PathVariable Integer max){
+        Collection<Student> students = studentService.getAgeGapStudents(min, max);
+        if (students.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(students);
+
+    }
+    @GetMapping ("/{studentId}/student") // doesn't work
+    public ResponseEntity<Faculty> getFacultyOfStudent(@PathVariable Long studentId){
+        Faculty facultyOfStudent = studentService.getFacultyOfStudent(studentId);
+        if(facultyOfStudent==null )
+            return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(facultyOfStudent);
+    }
     @PutMapping("/update/{studentId}")
     public ResponseEntity<Student> editStudentInfo(@PathVariable Long studentId, @RequestBody Student student) {
         Student studentEdited = studentService.updateStudent(studentId, student);
