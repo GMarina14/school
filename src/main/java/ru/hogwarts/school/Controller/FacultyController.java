@@ -39,6 +39,14 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
+      @GetMapping ("/by-name-or-color/{name}/{color}")
+      public ResponseEntity<Collection<Faculty>> getFacultyByNameOrByColor(@PathVariable String  name, @PathVariable String color) {
+          Collection<Faculty> faculties = facultyService.getfacultiesByNameOrColor(name, color);
+          if (faculties.isEmpty())
+              return ResponseEntity.notFound().build();
+          return ResponseEntity.ok(faculties);
+      }
+
     @GetMapping("/all")
     public ResponseEntity<Collection<Faculty>> getAll() {
         Collection<Faculty> faculties = facultyService.getAllFaculties();
@@ -48,11 +56,22 @@ public class FacultyController {
 
     }
 
+    @GetMapping("/students/{facultyId}")
+    public ResponseEntity<Collection<Student>> getStudentsOfFaculty(@PathVariable Long facultyId){
+        Collection<Student> students = facultyService.getStudentsOfFaculty(facultyId);
+        if(students==null || students.isEmpty())
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(students);
+    }
+
     @PutMapping("/update/{facultyId}")
     public ResponseEntity<Faculty> editFacultyInfo(@PathVariable Long facultyId, @RequestBody Faculty faculty) {
-        Faculty facultyEdited = facultyService.updateFaculty(facultyId, faculty);
+        Faculty facultyEdited = facultyService.getFacultyId(facultyId);
+
         if (facultyEdited == null)
             return ResponseEntity.badRequest().build();
+
+        facultyEdited = facultyService.updateFaculty(facultyId, faculty);
         return ResponseEntity.ok(facultyEdited);
     }
 
