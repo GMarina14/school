@@ -24,7 +24,7 @@ public class StudentController {
 
     @GetMapping("/by-id/{studentId}")
     public ResponseEntity<Student> getStudentByID(@PathVariable Long studentId) {
-        Student student = studentService.getStudentId(studentId);
+        Student student = studentService.getStudentById(studentId);
         if (student == null) {
             return ResponseEntity.notFound().build();
         }
@@ -56,7 +56,7 @@ public class StudentController {
         return ResponseEntity.ok(students);
 
     }
-    @GetMapping ("/{studentId}/student") // doesn't work
+    @GetMapping ("/{studentId}/student")
     public ResponseEntity<Faculty> getFacultyOfStudent(@PathVariable Long studentId){
         Faculty facultyOfStudent = studentService.getFacultyOfStudent(studentId);
         if(facultyOfStudent==null )

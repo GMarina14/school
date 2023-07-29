@@ -7,11 +7,6 @@ import ru.hogwarts.school.Repository.StudentRepository;
 
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.apache.logging.log4j.ThreadContext.get;
 
 @Service
 public class StudentService {
@@ -25,7 +20,7 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Student getStudentId(Long studentId) {
+    public Student getStudentById(Long studentId) {
         return studentRepository.findById(studentId).orElse(null);
     }
     public Collection<Student> getAgeGapStudents(int min, int max){
@@ -33,7 +28,7 @@ public class StudentService {
     }
 
     public Student updateStudent(Long studentId, Student student) {
-        Student studentInDB = getStudentId(studentId);
+        Student studentInDB = getStudentById(studentId);
         if(studentInDB==null)
             return null;// exception needed
 
@@ -58,7 +53,7 @@ public class StudentService {
     }
 
     public Faculty getFacultyOfStudent(Long studentId){
-        Student studentInDB = getStudentId(studentId);
+        Student studentInDB = getStudentById(studentId);
         if(studentInDB==null)
             return null;
         return studentRepository.findById(studentId).map(Student::getFaculty).orElse(null);
