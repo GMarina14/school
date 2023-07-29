@@ -10,6 +10,7 @@ import ru.hogwarts.school.Model.Student;
 import ru.hogwarts.school.Repository.AvatarRepository;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
@@ -23,7 +24,7 @@ public class AvatarService {
     @Value("${path.to.avatars.folder}")
     private String avatarDir;
 
-    private final StudentService studentService;
+    private final StudentService studentService; // studentRepository
     private final AvatarRepository avatarRepository;
 
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
@@ -47,7 +48,7 @@ public class AvatarService {
         avatar.setFilePath(filePath.toString());
         avatar.setFileSize(photos.getSize());
         avatar.setMediaType(photos.getContentType());
-        avatar.setData(photos.getBytes());//
+        avatar.setData(generatePhotoData(filePath));//photos.getBytes()
         avatarRepository.save(avatar);
 
     }
@@ -69,16 +70,23 @@ public class AvatarService {
         return filePath;
     }
 
-/*    private byte[] generatePhotoData(Path filePath) throws IOException {
+    private byte[] generatePhotoData(Path filePath) throws IOException {
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             BufferedImage photo = ImageIO.read(bis);
 
-        }
-        return null;
+            int height = photo.getHeight()/(photo.getWidth()/100);
+            BufferedImage preview = new BufferedImage(100, height, photo.getType());
+            Graphics2D graphics2D = preview.createGraphics();
+            graphics2D.drawImage(photo,0,0,100, height, null);
+            graphics2D.dispose();
 
-    }*/
+            ImageIO.write(preview, getExtension(filePath.getFileName().toString()), baos);
+            return baos.toByteArray();
+
+        }
+    }
 
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
