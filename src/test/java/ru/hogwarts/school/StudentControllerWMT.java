@@ -47,14 +47,19 @@ public class StudentControllerWMT {
 
     @Test
     public void createStudentTest() throws Exception {
+        final String name ="Sam";
+        final int age = 25;
+        final long id =1L;
+
+
         JSONObject studentObject = new JSONObject();
-        studentObject.put("name", "Sam");
-        studentObject.put("age", 25);
+        studentObject.put("name", name);
+        studentObject.put("age", age);
 
         Student student = new Student();
-        student.setId(1L);
-        student.setName("Sam");
-        student.setAge(25);
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
 
         when(studentRepository.save(ArgumentMatchers.any(Student.class))).thenReturn(student);
         when(studentRepository.findById(ArgumentMatchers.any(Long.class))).thenReturn(Optional.of(student));
@@ -65,17 +70,17 @@ public class StudentControllerWMT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("id"))
-                .andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.age").value("age"));
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.age").value(age));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/students/by-id/1")
+                        .get("/students/by-id/"+id)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("id"))
-                .andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.age").value("age"));
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.age").value(age));
     }
 
 
