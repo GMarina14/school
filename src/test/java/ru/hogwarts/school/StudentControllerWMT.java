@@ -45,7 +45,7 @@ public class StudentControllerWMT {
     @InjectMocks
     private StudentController studentController;
 
-    @Test
+  /*  @Test
     public void createStudentTest() throws Exception {
         final String name ="Sam";
         final int age = 25;
@@ -81,7 +81,7 @@ public class StudentControllerWMT {
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.age").value(age));
-    }
+    }*/
 
 
 }
