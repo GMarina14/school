@@ -41,8 +41,6 @@ public class StudentControllerTestTRT {
     @Autowired
     private StudentRepository studentRepositoryTest;
 
-    @MockBean
-    private FacultyRepository facultyRepositoryMock;
 
     @AfterEach
     public void resetDb() {
@@ -172,20 +170,20 @@ public class StudentControllerTestTRT {
         String name = "Fred";
         int age = 17;
         Student student = persistTestStudent(name, age);
-        List <Student> students= new ArrayList<>();
-        students.add(student);
         Faculty faculty = new Faculty(1L, "Gryffindor", "Scarlet and gold");
         student.setFaculty(faculty);
-        faculty.setStudents(students);
-        facultyRepositoryMock.save(faculty);
+
+
+
+        Faculty facultyTest = new Faculty();
+        facultyTest=student.getFaculty();
 
         HttpEntity<Faculty> entity = new HttpEntity<Faculty>(faculty);
 
-        student.setId(1L);
 
 
         //when
-        ResponseEntity<Faculty> response = restTemplate.exchange("/students/1/student", HttpMethod.GET, entity,
+        ResponseEntity<Faculty> response = restTemplate.exchange("/students/" + student.getId()+"/student", HttpMethod.GET, entity,
                 Faculty.class);
 
         //then
@@ -193,7 +191,6 @@ public class StudentControllerTestTRT {
         Assertions.assertThat(response.getBody().getName()).isEqualTo("Gryffindor");
 
 
-        facultyRepositoryMock.deleteAll();
 
     }
 

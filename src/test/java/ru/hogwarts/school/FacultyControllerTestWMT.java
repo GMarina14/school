@@ -184,7 +184,7 @@ public class FacultyControllerTestWMT {
 
         when(facultyService.updateFaculty(faculty.getId(), faculty)).thenReturn(faculty);
 
-        ResultActions resultActions = mockMvc.perform(put("/faculties/update/" + faculty.getId())
+        ResultActions resultActions = mockMvc.perform(put("/faculties/update/{facultyId}", faculty.getId())
                 .content(objectMapper.writeValueAsString(faculty))
                 .contentType(MediaType.APPLICATION_JSON)
                .accept(MediaType.APPLICATION_JSON)
@@ -264,6 +264,14 @@ public class FacultyControllerTestWMT {
         resultActionsStudents
                 .andExpect(status().isBadRequest());
         //**********************************************************************************************************
+        ResultActions resultActionsUpdate = mockMvc.perform(
+                put("/faculties/update/55588")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new Faculty()))
+        );
+        resultActionsUpdate
+                .andExpect(status().isBadRequest());
 
     }
 
