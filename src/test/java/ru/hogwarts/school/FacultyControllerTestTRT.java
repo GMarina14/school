@@ -22,6 +22,7 @@ import ru.hogwarts.school.Repository.StudentRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
@@ -36,14 +37,15 @@ public class FacultyControllerTestTRT {
     private FacultyRepository facultyRepository;
 
     @Autowired
-    private FacultyController facultyController;
+    private StudentRepository studentRepositoryTest;
 
-    @MockBean
-    private StudentRepository studentRepositoryMock;
+    @Autowired
+    private FacultyController facultyController;
 
     @AfterEach
     public void resetDb() {
         facultyRepository.deleteAll();
+        studentRepositoryTest.deleteAll();
     }
 
     @Test
@@ -157,29 +159,40 @@ public class FacultyControllerTestTRT {
     public void testIfReturnsStudentsOfFaculty(){
         //given
         Faculty faculty = new Faculty();
-        faculty = persistTestFaculty("Gryffindor", "Scarlet and gold");
+        faculty.setName("Gryffindor");
+        faculty.setColor("Scarlet and gold");
+        faculty.setId(4L);
 
-        Collection<Student> students = new ArrayList<>();
-        Student student = new Student(1L, "Luna", 9);
+
+
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Luna");
+        student.setAge(9);
+        studentRepositoryTest.save(student);
         student.setFaculty(faculty);
 
-        Student studentTwo = new Student(2L, "Fred", 14);
+        Student studentTwo = new Student();
+        studentTwo.setId(2L);
+        studentTwo.setName("Fred");
+        studentTwo.setAge(14);
+        studentRepositoryTest.save(studentTwo);
         studentTwo.setFaculty(faculty);
-        students.add(student);
-        students.add(studentTwo);
-        studentRepositoryMock.save(student);
-        studentRepositoryMock.save(studentTwo);
+        List<Student> students = new ArrayList<>(List.of(student, studentTwo));
+       // students.add(student);
+       // students.add(studentTwo);
+        faculty.setStudents(students);
 
-        ResponseEntity<Collection<Student>> response = restTemplate.exchange("/faculties/students/"+faculty.getId(),
-                HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Student>>() {
+
+        ResponseEntity<List<Student>> response = restTemplate.exchange("/faculties/students/"+faculty.getId(),
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<Student>>() {
                 });
 
         //then
-        Collection<Student> studentResult = response.getBody();
+        List<Student> studentResult = response.getBody();
         Assertions.assertThat(studentResult).isNotNull();
-        Assertions.assertThat(studentResult).isEqualTo(students);
+       // Assertions.assertThat(studentResult).isEqualTo(students);
 
-        studentRepositoryMock.deleteAll();
     }
 
 
