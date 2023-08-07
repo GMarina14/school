@@ -169,17 +169,19 @@ public class StudentControllerTestTRT {
     public void testIfReturnsFacultyByStudentId() {
         String name = "Fred";
         int age = 17;
-        Student student = persistTestStudent(name, age);
+
+        Student student = new Student();
+        student.setName(name);
+        student.setAge(age);
+
         Faculty faculty = new Faculty(1L, "Gryffindor", "Scarlet and gold");
+
         student.setFaculty(faculty);
+        studentRepositoryTest.save(student);
 
 
-
-        Faculty facultyTest = new Faculty();
-        facultyTest=student.getFaculty();
 
         HttpEntity<Faculty> entity = new HttpEntity<Faculty>(faculty);
-
 
 
         //when
