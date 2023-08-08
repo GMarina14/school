@@ -161,7 +161,7 @@ public class FacultyControllerTestTRT {
         Faculty faculty = new Faculty();
         faculty.setName("Gryffindor");
         faculty.setColor("Scarlet and gold");
-        faculty.setId(4L);
+        faculty.setId(5L);
 
 
 
@@ -169,19 +169,20 @@ public class FacultyControllerTestTRT {
         student.setId(1L);
         student.setName("Luna");
         student.setAge(9);
-        studentRepositoryTest.save(student);
         student.setFaculty(faculty);
+        studentRepositoryTest.save(student);
 
         Student studentTwo = new Student();
         studentTwo.setId(2L);
         studentTwo.setName("Fred");
         studentTwo.setAge(14);
-        studentRepositoryTest.save(studentTwo);
         studentTwo.setFaculty(faculty);
+        studentRepositoryTest.save(studentTwo);
         List<Student> students = new ArrayList<>(List.of(student, studentTwo));
        // students.add(student);
        // students.add(studentTwo);
         faculty.setStudents(students);
+        facultyRepository.save(faculty);
 
 
         ResponseEntity<List<Student>> response = restTemplate.exchange("/faculties/students/"+faculty.getId(),

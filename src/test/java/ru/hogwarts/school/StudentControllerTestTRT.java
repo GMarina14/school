@@ -169,7 +169,7 @@ public class StudentControllerTestTRT {
         Assertions.assertThat(studentResult).isEqualTo(studentCollection);
     }
 
-    @Test //doesn't work
+    @Test
     public void testIfReturnsFacultyByStudentId() {
         String name = "Fred";
         int age = 17;
