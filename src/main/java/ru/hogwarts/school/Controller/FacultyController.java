@@ -66,12 +66,16 @@ public class FacultyController {
 
     @PutMapping("/update/{facultyId}")
     public ResponseEntity<Faculty> editFacultyInfo(@PathVariable Long facultyId, @RequestBody Faculty faculty) {
-        Faculty facultyEdited = facultyService.getFacultyId(facultyId);
+        Faculty facultyEdited = facultyService.updateFaculty(facultyId, faculty);
+        if (facultyEdited == null)
+            return ResponseEntity.badRequest().build();
+
+      /*  Faculty facultyEdited = facultyService.getFacultyId(facultyId);
 
         if (facultyEdited == null)
             return ResponseEntity.badRequest().build();
 
-        facultyEdited = facultyService.updateFaculty(facultyId, faculty);
+        facultyEdited = facultyService.updateFaculty(facultyId, faculty);*/
         return ResponseEntity.ok(facultyEdited);
     }
 
