@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @RequestMapping("/avatars")
 @RestController
@@ -63,6 +66,34 @@ public class AvatarController {
                 is.transferTo(os);
         }
     }
+    @GetMapping(value = "/{studentId}/list-from-file")
+    public void listOfAvatars (@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize, HttpServletResponse response) throws IOException {
 
+        Collection<Avatar> avatars = new ArrayList<>();
+        avatars = avatarService.getAvatars(pageNumber, pageSize);
+        Path path;
 
+        for (Avatar avatar : avatars) {
+
+             path = Path.of(avatar.getFilePath());
+
+            try (
+                    InputStream is = Files.newInputStream(path);
+                    OutputStream os = response.getOutputStream();) {
+                response.setStatus(200);
+                response.setContentType(avatar.getMediaType());
+                response.setContentLength((int) avatar.getFileSize());
+                is.transferTo(os);
+            }
+        }
+
+    }
+
+    @GetMapping(value = "/{studentId}/list")
+    public ResponseEntity<List<Avatar>>  getList(@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize){
+        List<Avatar> avatarList = avatarService.getAvatarsList(pageNumber, pageSize);
+        if (avatarList.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(avatarList);
+    }
 }
