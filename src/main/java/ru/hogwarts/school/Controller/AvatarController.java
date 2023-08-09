@@ -66,7 +66,7 @@ public class AvatarController {
                 is.transferTo(os);
         }
     }
-    @GetMapping(value = "/{studentId}/list-from-file")
+    @GetMapping(value = "/list-from-file")
     public void listOfAvatars (@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize, HttpServletResponse response) throws IOException {
 
         Collection<Avatar> avatars = new ArrayList<>();
@@ -89,7 +89,7 @@ public class AvatarController {
 
     }
 
-    @GetMapping(value = "/{studentId}/list")
+    @GetMapping(value = "/list")
     public ResponseEntity<List<Avatar>>  getList(@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize){
         List<Avatar> avatarList = avatarService.getAvatarsList(pageNumber, pageSize);
         if (avatarList.isEmpty())

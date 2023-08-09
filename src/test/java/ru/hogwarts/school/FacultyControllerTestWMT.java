@@ -173,14 +173,13 @@ public class FacultyControllerTestWMT {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
-
     @Test // doesn't work
     public void shouldUpdateFacultyInfo() throws Exception {
         Long id = 12L;
         String name = "Some";
         String color = "color";
 
-        Faculty faculty = new Faculty(id, color, name);
+        Faculty faculty = new Faculty(id,  color, name);
 
         when(facultyService.updateFaculty(faculty.getId(), faculty)).thenReturn(faculty);
 
@@ -274,6 +273,5 @@ public class FacultyControllerTestWMT {
                 .andExpect(status().isBadRequest());
 
     }
-
 
 }
