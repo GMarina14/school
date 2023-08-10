@@ -47,6 +47,34 @@ public class StudentController {
         return ResponseEntity.ok(students);
 
     }
+    @GetMapping("/all-students-info")
+    public ResponseEntity<Integer> getQuantityOfAll() {
+
+        Integer quantityOfStudents = studentService.getStudentsQuantity();
+        if (quantityOfStudents==0)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(quantityOfStudents);
+    }
+
+    @GetMapping("/average-age")
+    public ResponseEntity<Double> getAverageAgeOfStudents() {
+
+       Double averageAgeOfStudents = studentService.getAverageAgeOfStudents();
+        if (averageAgeOfStudents==0)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(averageAgeOfStudents);
+    }
+
+    @GetMapping("/last-by-id")
+    public ResponseEntity<Collection<Student>> getLastStudentsById(){
+        Collection<Student> students = studentService.getLastByIdFiveStudents();
+        if (students.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(students);
+
+    }
 
     @GetMapping("/age-gap/{min}/{max}")
     public ResponseEntity<Collection<Student>> getStudentsInAgeGap(@PathVariable Integer min, @PathVariable Integer max){

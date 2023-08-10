@@ -44,8 +44,8 @@ public class FacultyControllerTestTRT {
 
     @AfterEach
     public void resetDb() {
-        facultyRepository.deleteAll();
         studentRepositoryTest.deleteAll();
+        facultyRepository.deleteAll();
     }
 
     @Test
@@ -155,34 +155,25 @@ public class FacultyControllerTestTRT {
         Assertions.assertThat(facultiesResult).isNotNull();
         Assertions.assertThat(facultiesResult).isEqualTo(facultyCollection);
     }
-    @Test //Doesnt work
+    @Test
     public void testIfReturnsStudentsOfFaculty(){
         //given
-        Faculty faculty = new Faculty();
-        faculty.setName("Gryffindor");
-        faculty.setColor("Scarlet and gold");
-        faculty.setId(5L);
 
-
+        Faculty faculty = persistTestFaculty ("Gryffindor","Scarlet and gold" );
 
         Student student = new Student();
-        student.setId(1L);
         student.setName("Luna");
         student.setAge(9);
         student.setFaculty(faculty);
         studentRepositoryTest.save(student);
 
         Student studentTwo = new Student();
-        studentTwo.setId(2L);
         studentTwo.setName("Fred");
         studentTwo.setAge(14);
         studentTwo.setFaculty(faculty);
         studentRepositoryTest.save(studentTwo);
+
         List<Student> students = new ArrayList<>(List.of(student, studentTwo));
-       // students.add(student);
-       // students.add(studentTwo);
-        faculty.setStudents(students);
-        facultyRepository.save(faculty);
 
 
         ResponseEntity<List<Student>> response = restTemplate.exchange("/faculties/students/"+faculty.getId(),
@@ -192,8 +183,7 @@ public class FacultyControllerTestTRT {
         //then
         List<Student> studentResult = response.getBody();
         Assertions.assertThat(studentResult).isNotNull();
-       // Assertions.assertThat(studentResult).isEqualTo(students);
-
+        Assertions.assertThat(studentResult).containsAll(students);
     }
 
 

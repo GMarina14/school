@@ -28,7 +28,7 @@ public class Faculty {
         this.students = students;
     }
 
-    public Faculty(Long id, String name, String color) {
+    public Faculty( Long id, String name, String color) {
 
         this.id = id;
         this.name = name;

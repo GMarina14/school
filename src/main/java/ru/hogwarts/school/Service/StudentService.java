@@ -23,13 +23,14 @@ public class StudentService {
     public Student getStudentById(Long studentId) {
         return studentRepository.findById(studentId).orElse(null);
     }
-    public Collection<Student> getAgeGapStudents(int min, int max){
+
+    public Collection<Student> getAgeGapStudents(int min, int max) {
         return studentRepository.findByAgeBetween(min, max);
     }
 
     public Student updateStudent(Long studentId, Student student) {
         Student studentInDB = getStudentById(studentId);
-        if(studentInDB==null)
+        if (studentInDB == null)
             return null;// exception needed
 
         studentInDB.setName(student.getName());
@@ -52,10 +53,24 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Faculty getFacultyOfStudent(Long studentId){
+    public Faculty getFacultyOfStudent(Long studentId) {
         Student studentInDB = getStudentById(studentId);
-        if(studentInDB==null)
+        if (studentInDB == null)
             return null;
         return studentRepository.findById(studentId).map(Student::getFaculty).orElse(null);
     }
+
+    public Collection<Student> getLastByIdFiveStudents() {
+        return studentRepository.getLastByIdFiveStudents();
+    }
+
+    public Integer getStudentsQuantity() {
+        return studentRepository.getStudentsQuantity();
+    }
+
+    public Double getAverageAgeOfStudents() {
+        return studentRepository.getAverageAgeOfStudents();
+    }
+
+
 }
