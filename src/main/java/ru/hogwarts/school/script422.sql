@@ -14,3 +14,4 @@ select humans.name, humans.age, cars.brand, cars.price from humans INNER JOIN ca
 
 select student.name, student.age, faculty.name from student INNER JOIN faculty ON student.faculty_id = faculty.id;
 select student.name from student inner join avatar a on student.id = a.student_id;
+
