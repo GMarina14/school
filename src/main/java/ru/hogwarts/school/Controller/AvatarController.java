@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.Model.Avatar;
 import ru.hogwarts.school.Service.AvatarService;
 import ru.hogwarts.school.Service.StudentService;
+import ru.hogwarts.school.dto.AvatarDTO;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +69,6 @@ public class AvatarController {
     }
     @GetMapping(value = "/list-from-file")
     public void listOfAvatars (@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize, HttpServletResponse response) throws IOException {
-
         Collection<Avatar> avatars = new ArrayList<>();
         avatars = avatarService.getAvatars(pageNumber, pageSize);
         Path path;
@@ -90,8 +90,8 @@ public class AvatarController {
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<Avatar>>  getList(@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize){
-        List<Avatar> avatarList = avatarService.getAvatarsList(pageNumber, pageSize);
+    public ResponseEntity<List<AvatarDTO>>  getList(@RequestParam("page") Integer pageNumber, @RequestParam ("size") Integer pageSize){
+        List<AvatarDTO> avatarList = avatarService.getAvatarsList(pageNumber, pageSize);
         if (avatarList.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(avatarList);

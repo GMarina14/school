@@ -7,9 +7,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.Mapper.AvatarMapper;
 import ru.hogwarts.school.Model.Avatar;
 import ru.hogwarts.school.Model.Student;
 import ru.hogwarts.school.Repository.AvatarRepository;
+import ru.hogwarts.school.dto.AvatarDTO;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -30,10 +33,12 @@ public class AvatarService {
 
     private final StudentService studentService; // studentRepository
     private final AvatarRepository avatarRepository;
+    private final AvatarMapper avatarMapper;
 
-    public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
+    public AvatarService(StudentService studentService, AvatarRepository avatarRepository, AvatarMapper avatarMapper) {
         this.studentService = studentService;
         this.avatarRepository = avatarRepository;
+        this.avatarMapper = avatarMapper;
     }
 
     public void uploadAvatar(Long studentId, MultipartFile photos) throws IOException {
@@ -52,10 +57,11 @@ public class AvatarService {
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
-    public List<Avatar> getAvatarsList(Integer pageNumber, Integer pageSize){
+    public List<AvatarDTO> getAvatarsList(Integer pageNumber, Integer pageSize){
         PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
 
-        return avatarRepository.findAll(pageRequest).getContent();
+        return avatarRepository.findAll(pageRequest).getContent().stream().map(avatarMapper ::mapToDTO).collect(Collectors.toList());
+
     }
 
     private void saveToDb(Student student, MultipartFile photos, Path filePath) throws IOException {
