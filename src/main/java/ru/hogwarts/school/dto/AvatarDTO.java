@@ -23,8 +23,6 @@ public class AvatarDTO {
     public AvatarDTO() {
     }
 
-    ;
-
     public Long getId() {
         return id;
     }
