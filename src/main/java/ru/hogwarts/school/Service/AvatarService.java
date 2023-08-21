@@ -2,6 +2,7 @@ package ru.hogwarts.school.Service;
 
 import io.github.classgraph.ResourceList;
 import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,9 @@ public class AvatarService {
     private final AvatarRepository avatarRepository;
     private final AvatarMapper avatarMapper;
 
+    //   private static final Logger logger = LoggerFactory.getLogger(AvatarService.class);
+
+
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository, AvatarMapper avatarMapper) {
         this.studentService = studentService;
         this.avatarRepository = avatarRepository;
@@ -42,29 +46,38 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile photos) throws IOException {
+     //   logger.info("The method to upload an avatar of a student by id {} was invoked", studentId);
+
         Student student = studentService.getStudentById(studentId);
         Path filePath = saveToDisk(student, photos);
         saveToDb(student, photos, filePath);
     }
 
     public Avatar findAvatar(Long studentId) {
+      //  logger.info("The method to find an avatar by student's id {} was invoked", studentId);
+
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
-    public Collection<Avatar> getAvatars(Integer pageNumber, Integer pageSize){
-        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
+    public Collection<Avatar> getAvatars(Integer pageNumber, Integer pageSize) {
+//        logger.info("Method for paginating students avatars was invoked");
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
 
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
-    public List<AvatarDTO> getAvatarsList(Integer pageNumber, Integer pageSize){
-        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
+    public List<AvatarDTO> getAvatarsList(Integer pageNumber, Integer pageSize) {
+     //   logger.info("Method for convenient paginating students avatars was invoked");
 
-        return avatarRepository.findAll(pageRequest).getContent().stream().map(avatarMapper ::mapToDTO).collect(Collectors.toList());
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
+
+        return avatarRepository.findAll(pageRequest).getContent().stream().map(avatarMapper::mapToDTO).collect(Collectors.toList());
 
     }
 
     private void saveToDb(Student student, MultipartFile photos, Path filePath) throws IOException {
+    //    logger.info("Method to save avatar to DB was invoked");
+
         Avatar avatar = findAvatar(student.getId());
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
@@ -76,6 +89,8 @@ public class AvatarService {
     }
 
     private Path saveToDisk(Student student, MultipartFile photos) throws IOException {
+     //   logger.info("Method to save avatar to disk was invoked");
+
         Path filePath = Path.of(avatarDir, student.getId() + "." + getExtension(photos.getOriginalFilename()));
 
         Files.createDirectories(filePath.getParent());
@@ -93,15 +108,17 @@ public class AvatarService {
     }
 
     private byte[] generatePhotoData(Path filePath) throws IOException {
+      //  logger.info("Method to generate avatar data was invoked");
+
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             BufferedImage photo = ImageIO.read(bis);
 
-            int height = photo.getHeight()/(photo.getWidth()/100);
+            int height = photo.getHeight() / (photo.getWidth() / 100);
             BufferedImage preview = new BufferedImage(100, height, photo.getType());
             Graphics2D graphics2D = preview.createGraphics();
-            graphics2D.drawImage(photo,0,0,100, height, null);
+            graphics2D.drawImage(photo, 0, 0, 100, height, null);
             graphics2D.dispose();
 
             ImageIO.write(preview, getExtension(filePath.getFileName().toString()), baos);
@@ -111,6 +128,8 @@ public class AvatarService {
     }
 
     private String getExtension(String fileName) {
+       // logger.info("Method to get file extension was invoked");
+
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
