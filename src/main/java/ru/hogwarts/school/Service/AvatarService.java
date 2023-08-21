@@ -2,8 +2,7 @@ package ru.hogwarts.school.Service;
 
 import io.github.classgraph.ResourceList;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ public class AvatarService {
     private final AvatarRepository avatarRepository;
     private final AvatarMapper avatarMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(AvatarService.class);
+    //   private static final Logger logger = LoggerFactory.getLogger(AvatarService.class);
 
 
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository, AvatarMapper avatarMapper) {
@@ -47,7 +46,7 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile photos) throws IOException {
-        logger.info("The method to upload an avatar of a student by id {} was invoked", studentId);
+     //   logger.info("The method to upload an avatar of a student by id {} was invoked", studentId);
 
         Student student = studentService.getStudentById(studentId);
         Path filePath = saveToDisk(student, photos);
@@ -55,20 +54,20 @@ public class AvatarService {
     }
 
     public Avatar findAvatar(Long studentId) {
-        logger.info("The method to find an avatar by student's id {} was invoked", studentId);
+      //  logger.info("The method to find an avatar by student's id {} was invoked", studentId);
 
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
     public Collection<Avatar> getAvatars(Integer pageNumber, Integer pageSize) {
-        logger.info("Method for paginating students avatars was invoked");
+//        logger.info("Method for paginating students avatars was invoked");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
 
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
     public List<AvatarDTO> getAvatarsList(Integer pageNumber, Integer pageSize) {
-        logger.info("Method for convenient paginating students avatars was invoked");
+     //   logger.info("Method for convenient paginating students avatars was invoked");
 
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
 
@@ -77,7 +76,7 @@ public class AvatarService {
     }
 
     private void saveToDb(Student student, MultipartFile photos, Path filePath) throws IOException {
-        logger.info("Method to save avatar to DB was invoked");
+    //    logger.info("Method to save avatar to DB was invoked");
 
         Avatar avatar = findAvatar(student.getId());
         avatar.setStudent(student);
@@ -90,7 +89,7 @@ public class AvatarService {
     }
 
     private Path saveToDisk(Student student, MultipartFile photos) throws IOException {
-        logger.info("Method to save avatar to disk was invoked");
+     //   logger.info("Method to save avatar to disk was invoked");
 
         Path filePath = Path.of(avatarDir, student.getId() + "." + getExtension(photos.getOriginalFilename()));
 
@@ -109,7 +108,7 @@ public class AvatarService {
     }
 
     private byte[] generatePhotoData(Path filePath) throws IOException {
-        logger.info("Method to generate avatar data was invoked");
+      //  logger.info("Method to generate avatar data was invoked");
 
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
@@ -129,7 +128,7 @@ public class AvatarService {
     }
 
     private String getExtension(String fileName) {
-        logger.info("Method to get file extension was invoked");
+       // logger.info("Method to get file extension was invoked");
 
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
