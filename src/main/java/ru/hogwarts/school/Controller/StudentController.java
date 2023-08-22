@@ -92,6 +92,15 @@ public class StudentController {
 
         return ResponseEntity.ok(facultyOfStudent);
     }
+    @GetMapping("/name-starts-with/{letter}")
+    public ResponseEntity<Collection<Student>> getStudentsByNamesStartingWith(@PathVariable String letter){
+        Collection<Student> students = studentService.getNamesStartingWithLetter(letter);
+        if (students.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(students);
+    }
+
+
     @PutMapping("/update/{studentId}")
     public ResponseEntity<Student> editStudentInfo(@PathVariable Long studentId, @RequestBody Student student) {
         Student studentEdited = studentService.updateStudent(studentId, student);
@@ -105,5 +114,6 @@ public class StudentController {
         studentService.deleteStudent(studentId);
         return ResponseEntity.ok().build();
     }
+
 }
 

@@ -96,4 +96,10 @@ public class AvatarController {
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(avatarList);
     }
+
+    @GetMapping("/stream")
+    public Integer getCalculationResult(){
+        return avatarService.getCalculationResult();
+
+    }
 }
