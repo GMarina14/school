@@ -79,9 +79,22 @@ public class AvatarService {
     }
 
     public Integer getCalculationResult() {
-        Stream<Integer> stream = Stream.iterate(1, a -> a + 1);
+        System.out.println("Initial equation");
+        long startTimeF = System.nanoTime();
+        int sum = Stream.iterate(1, a -> a +1).limit(1_000_000).reduce(0, (a, b) -> a + b );
+        long endTimeF = System.nanoTime();
+        long timeElapsedF = endTimeF - startTimeF;
+        System.out.println("Initial equation took "+timeElapsedF);
 
-        return stream.limit(1_000_000).parallel().reduce(0, Integer::sum);
+        System.out.println("Optimized equation");
+        long startTimeS = System.nanoTime();
+        Stream<Integer> stream = Stream.iterate(1, a -> a + 1).parallel().limit(1_000_000);
+        Integer result =stream.parallel().reduce(0, Integer::sum);
+        long endTimeS = System.nanoTime();
+        long timeElapsedS = endTimeS - startTimeS;
+        System.out.println("Optimized equation took "+timeElapsedS);
+
+        return result;
     }
 
     private void saveToDb(Student student, MultipartFile photos, Path filePath) throws IOException {
