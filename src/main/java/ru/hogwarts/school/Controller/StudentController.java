@@ -100,6 +100,14 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @GetMapping("/threads")
+    public String getListOfStudentsInThreads(){
+        return studentService.getStudentsInThreads();
+    }
+    @GetMapping("/synchronized")
+    public String getListOfStudentsSynchronized(){
+        return studentService.getStudentsSynchronized();
+    }
 
     @PutMapping("/update/{studentId}")
     public ResponseEntity<Student> editStudentInfo(@PathVariable Long studentId, @RequestBody Student student) {

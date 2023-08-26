@@ -11,13 +11,16 @@ import ru.hogwarts.school.Model.Student;
 import ru.hogwarts.school.Repository.StudentRepository;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private final Object object = new Object();
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -124,6 +127,80 @@ public class StudentService {
         return studentRepository.findAll().stream()
                 .filter(e -> e.getName().startsWith(letter.toUpperCase()))
                 .collect(Collectors.toList());
+    }
+
+    public String getStudentsInThreads() {
+        List<Student> students = studentRepository.findAll();
+        if (students.size() < 6)
+            throw new RuntimeException("Not enough students");
+
+        for (Student student : students) {
+            System.out.println(student.getName());
+        }
+
+        System.out.println();
+
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println(students.get(2).getName());
+            System.out.println(students.get(3).getName());
+        }).start();
+
+        System.out.println(students.get(4).getName());
+        new Thread(() -> {
+            System.out.println(students.get(5).getName());
+            System.out.println(students.get(6).getName());
+        }).start();
+
+        return "All Good";
+    }
+
+    public String getStudentsSynchronized() {
+        List<Student> students = studentRepository.findAll().subList(0,7);
+        for (int i = 0; i <6; i++) {
+            System.out.println(students.get(i).getName());
+        }
+
+        System.out.println();
+
+        output(students.get(0));
+        output(students.get(1));
+
+
+        Thread one = new Thread(() -> {
+            output(students.get(2));
+            if (Thread.currentThread().isInterrupted())
+                throw new RuntimeException();
+
+            output(students.get(3));
+        });
+        one.start();
+
+      //  output(students.get(4));
+
+        Thread two = new Thread(() -> {
+            output(students.get(4));
+            if (Thread.currentThread().isInterrupted()) {
+                throw new RuntimeException();
+            }
+            output(students.get(5));
+        });
+        two.start();
+
+        return "All good";
+    }
+
+    private void output(Student student) {
+        synchronized (object) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(student.getName());
+        }
     }
 
 
