@@ -39,13 +39,13 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
-      @GetMapping ("/by-name-or-color/{name}/{color}")
-      public ResponseEntity<Collection<Faculty>> getFacultyByNameOrByColor(@PathVariable String  name, @PathVariable String color) {
-          Collection<Faculty> faculties = facultyService.getfacultiesByNameOrColor(name, color);
-          if (faculties.isEmpty())
-              return ResponseEntity.notFound().build();
-          return ResponseEntity.ok(faculties);
-      }
+    @GetMapping("/by-name-or-color/{name}/{color}")
+    public ResponseEntity<Collection<Faculty>> getFacultyByNameOrByColor(@PathVariable String name, @PathVariable String color) {
+        Collection<Faculty> faculties = facultyService.getfacultiesByNameOrColor(name, color);
+        if (faculties.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(faculties);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<Collection<Faculty>> getAll() {
@@ -57,11 +57,19 @@ public class FacultyController {
     }
 
     @GetMapping("/students/{facultyId}")
-    public ResponseEntity<Collection<Student>> getStudentsOfFaculty(@PathVariable Long facultyId){
+    public ResponseEntity<Collection<Student>> getStudentsOfFaculty(@PathVariable Long facultyId) {
         Collection<Student> students = facultyService.getStudentsOfFaculty(facultyId);
-        if(students==null || students.isEmpty())
+        if (students == null || students.isEmpty())
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/longest-name")
+    public ResponseEntity<String> getLongestFacultyName() {
+        String longestName = facultyService.getLongestFacultyName();
+        if (longestName.isEmpty())
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(longestName);
     }
 
     @PutMapping("/update/{facultyId}")
